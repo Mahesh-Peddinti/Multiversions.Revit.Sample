@@ -2,6 +2,8 @@
 using Autodesk.Revit.DB;
 using Autodesk.Revit.UI;
 using Autodesk.Revit.UI.Selection;
+using Multiversions.Revit.Sample.Views;
+
 
 namespace Multiversions.Revit.Sample
 {
@@ -27,10 +29,21 @@ namespace Multiversions.Revit.Sample
             ElementSet elements
         )
         {
+
+
             var uidoc = commandData.Application.ActiveUIDocument;
             var doc = uidoc.Document;
             var selection = uidoc.Selection;
 
+            //UI implimentation
+            //var vm = new ViewModel();
+
+            //Show the main window of the application
+
+            //var mainWindow = new MainWindow { DataContext = vm };
+            var mainWindow = new TestWindow();
+            mainWindow.ShowDialog();
+            /*
             // Prompts the user to select a single element of type Floof
             var floorRef = selection.PickObject(ObjectType.Element, new FloorSelectionFilter());
             var floor = doc.GetElement(floorRef) as Floor;
@@ -53,10 +66,12 @@ namespace Multiversions.Revit.Sample
             areaMetric = UnitUtils.ConvertFromInternalUnits(areaInternal, forgeTypeId);
 #else
 
-            areaMetric = UnitUtils.ConvertFromInternalUnits(areaInternal, DisplayUnitType.DUT_SQUARE_METERS);
+            areaMetric = UnitUtils.ConvertFromInternalUnits(areaInternal, DisplayUnitType.DUT_CUBIC_METERS);
 #endif
 
             TaskDialog.Show("Multiversion Sample", $"Selected floor has a surface area of {areaMetric} m2");
+
+            */
             return Result.Succeeded;
         }
     }
@@ -72,4 +87,5 @@ namespace Multiversions.Revit.Sample
         public bool AllowReference(Reference reference, XYZ position)
             => true;
     }
+
 }

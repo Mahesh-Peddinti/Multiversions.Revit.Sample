@@ -1,0 +1,5 @@
+﻿<Window x:Class="Multiversions.Revit.Sample.Views.TestWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+		Height ="500" Width ="250">    
+</Window>
