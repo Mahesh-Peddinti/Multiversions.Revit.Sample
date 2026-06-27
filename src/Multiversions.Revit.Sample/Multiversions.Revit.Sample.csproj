@@ -150,13 +150,18 @@
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </EmbeddedResource>
 
+    <EmbeddedResource Remove="Resources\ToolIcon.png" />
+
+    <EmbeddedResource Remove="Resources\ToolIcon.tiff" />
+
     <Content Include="Properties\launchSettings.json">
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
 
   <ItemGroup>
-    <Compile Include="FloorAreaCommand.cs" />
+    <Compile Include="AddInApplication.cs" />
+    <Compile Include="AddInCommand.cs" />
     <Compile Include="ViewModel.cs" />
     <Compile Include="ViewModels\CommandViewModel.cs" />
     <Compile Include="ViewModels\DialogViewModelBase.cs" />
@@ -169,13 +174,18 @@
     </Page>
   </ItemGroup>
 
+  <ItemGroup>
+    <Resource Include="Resources\ToolIcon.png" />
+    <Resource Include="Resources\ToolIcon.tiff" />
+  </ItemGroup>
+
   <PropertyGroup>
     <RootNamespace>Multiversions.Revit.Sample</RootNamespace>
     <AssemblyName>Multiversions.Revit.Sample</AssemblyName>
 
-    <Authors>AlvaroPickmans</Authors>
+    <Authors>MBDevelopersMahesh Peddinti</Authors>
     <PackageId>8648407C-C0ED-4D95-8082-E4E3877D441F</PackageId>
-    <Company>Acme Ltd</Company>
+    <Company>MB DEVev</Company>
     <PackageProjectUrl>http://example.com/test</PackageProjectUrl>
     <Product>Multiversions.Revit.Sample</Product>
     <Version>0.0.1</Version>

@@ -1,9 +1,10 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <RevitAddIns>
-  <AddIn Type="Command">
-    <FullClassName>Multiversions.Revit.Sample.FloorAreaCommand</FullClassName>
-    <AddInId>D51C131A-5E50-4A2B-8F52-D8036AA7A701</AddInId>
-    <Text>Multiversions.Revit.Sample - Floor Area</Text>
+  <AddIn Type="Application">
+	<Name>SampleApplication</Name>
+    <FullClassName>Multiversions.Revit.Sample.AddInApplication</FullClassName>
+    <AddInId>B415F4B3-CB67-4FC3-B7C7-10E6B42FB832</AddInId>
+    <Text>Multiversions.Revit.Sample</Text>
     <Description>The description for your command goes here</Description>
     <Assembly>Multiversions.Revit.Sample.dll</Assembly>
     <VendorId>== Edit in project's properties ==</VendorId>
@@ -29,5 +30,12 @@
 -->
 
   </AddIn>
-
+    <AddIn Type ="Command">
+		<FullClassName>Multiversions.Revit.Sample.AddInCommand</FullClassName>
+		<AddInId>792265B3-E6CD-4295-A497-01667895292E</AddInId>
+		<Text>Multiversions.Revit.Sample</Text>
+		<Description>The description for your command goes here</Description>
+		<Assembly>Multiversions.Revit.Sample.dll</Assembly>
+		<VendorId>== Edit in project's properties ==</VendorId>
+	</AddIn>
 </RevitAddIns>
