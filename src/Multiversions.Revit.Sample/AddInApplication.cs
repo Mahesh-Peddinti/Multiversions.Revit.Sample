@@ -14,7 +14,7 @@ namespace Multiversions.Revit.Sample
         public Result OnStartup(UIControlledApplication application)
         {
             RibbonPanel ribbonPanel = application.CreateRibbonPanel("MBDEVTOOLS");
-            PushButton pushButton = ribbonPanel.AddItem(new PushButtonData("Button", "PushButton",
+            PushButton pushButton = ribbonPanel.AddItem(new PushButtonData("Button", "ToolTester",
                                                 @"D:\REVIT API_TOOLS\MultiversionAddIn\New folder\src\bin\Debug\2026\Multiversions.Revit.Sample.dll",
                                                 "Multiversions.Revit.Sample.AddInCommand")) as PushButton;   
            

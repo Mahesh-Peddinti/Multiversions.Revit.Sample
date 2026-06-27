@@ -162,6 +162,8 @@
   <ItemGroup>
     <Compile Include="AddInApplication.cs" />
     <Compile Include="AddInCommand.cs" />
+    <Compile Include="Models\RelayCommand.cs" />
+    <Compile Include="Models\TheThemeChanger.cs" />
     <Compile Include="ViewModel.cs" />
     <Compile Include="ViewModels\CommandViewModel.cs" />
     <Compile Include="ViewModels\DialogViewModelBase.cs" />

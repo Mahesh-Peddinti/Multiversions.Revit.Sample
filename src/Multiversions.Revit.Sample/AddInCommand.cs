@@ -2,6 +2,7 @@
 using Autodesk.Revit.DB;
 using Autodesk.Revit.UI;
 using Autodesk.Revit.UI.Selection;
+using Multiversions.Revit.Sample.ViewModels;
 using Multiversions.Revit.Sample.Views;
 
 
@@ -13,7 +14,7 @@ namespace Multiversions.Revit.Sample
     /// <seealso cref="T:Autodesk.Revit.UI.IExternalCommand" />
     [Transaction(TransactionMode.Manual)]
     [Regeneration(RegenerationOption.Manual)]
-    public class FloorAreaCommand : IExternalCommand
+    public class AddInCommand : IExternalCommand
     {
         /// <summary>
         /// Executes the specified Revit command <see cref="ExternalCommand"/>.
@@ -23,26 +24,18 @@ namespace Multiversions.Revit.Sample
         /// <param name="message">The message.</param>
         /// <param name="elements">The elements.</param>
         /// <returns>The result of command execution.</returns>
-        public Result Execute(
-            ExternalCommandData commandData,
-            ref string message,
-            ElementSet elements
-        )
+        public Result Execute(ExternalCommandData commandData,ref string message,ElementSet elements)
         {
-
-
             var uidoc = commandData.Application.ActiveUIDocument;
             var doc = uidoc.Document;
             var selection = uidoc.Selection;
 
             //UI implimentation
-            //var vm = new ViewModel();
+            var vm = new CommandViewModel();
 
             //Show the main window of the application
-
-            //var mainWindow = new MainWindow { DataContext = vm };
-            var mainWindow = new TestWindow();
-            mainWindow.ShowDialog();
+            var mainWindow = new TestWindow { DataContext = vm };           
+            mainWindow.Show();
             /*
             // Prompts the user to select a single element of type Floof
             var floorRef = selection.PickObject(ObjectType.Element, new FloorSelectionFilter());
