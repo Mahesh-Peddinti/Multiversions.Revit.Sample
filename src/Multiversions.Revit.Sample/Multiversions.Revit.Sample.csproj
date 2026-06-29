@@ -162,15 +162,19 @@
   <ItemGroup>
     <Compile Include="AddInApplication.cs" />
     <Compile Include="AddInCommand.cs" />
+    <Compile Include="Models\BusDuctCreation.cs" />
     <Compile Include="Models\RelayCommand.cs" />
     <Compile Include="Models\TheThemeChanger.cs" />
-    <Compile Include="ViewModel.cs" />
-    <Compile Include="ViewModels\CommandViewModel.cs" />
+    <Compile Include="Storage\DuctDataStorage.cs" />
+    <Compile Include="ViewModels\MainViewModel.cs" />
     <Compile Include="ViewModels\DialogViewModelBase.cs" />
     <Compile Include="Views\TestWindow.xaml.cs" />
   </ItemGroup>
 
   <ItemGroup>
+    <Page Include="Views\Styles\Style.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Views\TestWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
     </Page>
