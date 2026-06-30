@@ -2,8 +2,11 @@
 using Autodesk.Revit.DB;
 using Autodesk.Revit.UI;
 using Autodesk.Revit.UI.Selection;
+using Multiversions.Revit.Sample.Services;
+using Multiversions.Revit.Sample.Storage;
 using Multiversions.Revit.Sample.ViewModels;
 using Multiversions.Revit.Sample.Views;
+using System.Collections.ObjectModel;
 
 
 namespace Multiversions.Revit.Sample
@@ -24,16 +27,27 @@ namespace Multiversions.Revit.Sample
         /// <param name="message">The message.</param>
         /// <param name="elements">The elements.</param>
         /// <returns>The result of command execution.</returns>
-        public Result Execute(ExternalCommandData commandData,ref string message,ElementSet elements)
+        public Result Execute(ExternalCommandData commandData, ref string message, ElementSet elements)
         {
             var uidoc = commandData.Application.ActiveUIDocument;
             var doc = uidoc.Document;
             var selection = uidoc.Selection;
+            //Revit Data
+            RevitDataService service = new RevitDataService(doc);
+
+            var systems = service.GetSystemTypes();
+
+            var ducts = service.GetDuctTypes();
+
+            var levels = service.GetLevels();
+
+
             //UI implimentation
-            var vm = new MainViewModel();
+            var vm = new MainViewModel(systems,ducts,levels);
+            
             //Show the main window of the application
-            var mainWindow = new TestWindow { DataContext = vm };           
-            mainWindow.Show();           
+            var mainWindow = new TestWindow { DataContext = vm };
+            mainWindow.Show();
             return Result.Succeeded;
         }
     }  

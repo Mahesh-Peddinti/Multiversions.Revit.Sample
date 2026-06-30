@@ -6,7 +6,7 @@
         xmlns:viewmodels="clr-namespace:Multiversions.Revit.Sample.ViewModels"
         xmlns:local="clr-namespace:Multiversions.Revit.Sample.Views"       
         mc:Ignorable="d"
-        Height="600" Width="700" Title="MB Dev Tools" FontSize="20"
+        Height="620" Width="700" Title="MB Dev Tools" FontSize="20"
         ResizeMode="CanResizeWithGrip">
     <Window.Resources>
         <ResourceDictionary>
@@ -18,18 +18,30 @@
 
     <Grid>
         <Grid.RowDefinitions>
-            <RowDefinition Height="40"/>
+            <RowDefinition Height="35"/>
             <RowDefinition Height="400"/>
             <RowDefinition Height="80"/>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
         <Grid Grid.Row="0">
-            <ToggleButton 
-                Style="{StaticResource FlatThemeToggle}"
-                Command="{Binding ThemeChangeCommand}"
-                VerticalAlignment="Center"
-                HorizontalAlignment="Right"
-                Margin="0,0,15,0"/>
+            <StackPanel Orientation="Horizontal" 
+                        HorizontalAlignment="Right"                         
+                        VerticalAlignment="Center"
+                        Margin="0,0,20,0">
+                <!-- Optional Label -->
+                <TextBlock Text="Dark Mode" 
+                           VerticalAlignment="Center" 
+                           Margin="0,0,10,0" 
+                           FontSize="14" 
+                           FontWeight="SemiBold" 
+                           Foreground="#333333"/>       
+
+                <!-- Flat Toggle Button -->
+                <ToggleButton Style="{StaticResource FlatThemeToggle}"
+                              Checked="ThemeToggle_Checked"
+                              Unchecked="ThemeToggle_Unchecked"
+                              Command="{Binding ThemeChangeCommand}"/>   
+            </StackPanel>
         </Grid>
         <Grid Grid.Row="1">
             <Grid.ColumnDefinitions>
@@ -69,6 +81,7 @@
                         <ComboBox
                             Style="{StaticResource ModernComboBox}"
                             ItemsSource="{Binding DuctSystemTypes}"
+                            DisplayMemberPath="Name"
                             SelectedItem="{Binding SelectedDuctSystem}"/>
                         <TextBlock
                             Style="{StaticResource SectionLabel}"
@@ -76,6 +89,7 @@
                         <ComboBox
                             Style="{StaticResource ModernComboBox}"
                             ItemsSource="{Binding DuctTypes}"
+                            DisplayMemberPath="Name"
                             SelectedItem="{Binding SelectedDuctType}"/>
                         <TextBlock
                             Style="{StaticResource SectionLabel}"
@@ -83,6 +97,7 @@
                         <ComboBox
                             Style="{StaticResource ModernComboBox}"
                             ItemsSource="{Binding DuctLevels}"
+                            DisplayMemberPath="Name"
                             SelectedItem="{Binding SelectedLevel}"/>
                     </StackPanel>
                 </Border>

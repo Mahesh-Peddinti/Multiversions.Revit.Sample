@@ -29,9 +29,25 @@ namespace Multiversions.Revit.Sample.Models
                     using(Transaction tx = new Transaction(doc))
                     {
                         tx.Start();
-                        
+                        //doc.Create.NewMechanicalSystem();
                         tx.Commit();
                     }
+                }
+                using(Transaction txPlaceHolder = new Transaction(doc,"Creating Duct Place Holders"))
+                {
+                    txPlaceHolder.Start();
+                    //Duct.CreatePlaceholder(doc,);
+                    txPlaceHolder.Commit();
+
+
+                }
+
+                using(Transaction txConvert = new Transaction(doc,"Convert Duct Place Holder in to duct"))
+                {
+                    txConvert.Start();
+                    //MechanicalUtils.ConvertDuctPlaceholders(doc,);
+                    txConvert.Commit();
+
                 }
 
             }
