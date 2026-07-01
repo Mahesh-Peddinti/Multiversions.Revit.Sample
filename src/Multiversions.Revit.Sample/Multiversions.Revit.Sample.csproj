@@ -172,7 +172,6 @@
     <Compile Include="Storage\SystemTypeDto.cs" />
     <Compile Include="Storage\DuctDataStorage.cs" />
     <Compile Include="ViewModels\MainViewModel.cs" />
-    <Compile Include="ViewModels\DialogViewModelBase.cs" />
     <Compile Include="Views\TestWindow.xaml.cs" />
   </ItemGroup>
 

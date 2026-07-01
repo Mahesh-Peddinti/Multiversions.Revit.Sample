@@ -25,7 +25,7 @@ namespace Multiversions.Revit.Sample.Storage
             
         }
 
-        public Connector _endConnector;
+        private Connector _endConnector;
         public Connector EndConnector
         {
             get { return _endConnector; }
@@ -36,33 +36,13 @@ namespace Multiversions.Revit.Sample.Storage
             }
         }
 
-        public ObservableCollection<string> DuctLevels { get; set; }
+        
 
         public event PropertyChangedEventHandler PropertyChanged;
         private void OnPropertyChanged(string propertyName)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
-
-        public void Execute(UIDocument uiDoc)
-        {
-            
-            //Levels Loading
-            DuctLevels = new ObservableCollection<string>();
-            var levels = new FilteredElementCollector(uiDoc.Document)
-                            .OfClass(typeof(Level))
-                            .Cast<Level>()
-                            .ToList();
-            foreach (Level level in levels)
-            {
-                DuctLevels.Add(level.Name);
-            }
-
-        }
-
-        public string GetName()
-        {
-            return "DuctDataStorage";
-        }
+       
     }
 }
