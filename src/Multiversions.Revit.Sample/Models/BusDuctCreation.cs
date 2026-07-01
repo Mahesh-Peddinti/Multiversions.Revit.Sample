@@ -8,16 +8,27 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace Multiversions.Revit.Sample.Models
-{
+{ 
+
     public class BusDuctCreation : IExternalEventHandler
     {
-        
-        public string _SystemClassificationName { get; set; }
+        //This class is responsible for creating bus duct in Revit using the selected start and end connectors
+        //implement all the properties to recieve value from the view model and use them in the Execute method to create bus duct
+        public Connector StartConnector { get; set; }
+        public Connector EndConnector { get; set; }
+        public string SelectedDuctType { get; set; }
+        public string SelectedDuctLevel { get; set; }
+        public string SelectedDuctSystemType { get; set; }
+
         public void Execute(UIApplication app)
-        {
-           
+        {          
 
             Document doc = app.ActiveUIDocument.Document;
+            //String formatting for the selected values
+            string info = $"Selected Duct Type: {SelectedDuctType}, Selected Duct Level: {SelectedDuctLevel}, Selected Duct System Type: {SelectedDuctSystemType}";
+
+            TaskDialog.Show("Revit", info);
+            /*
             try
             {
 
@@ -56,8 +67,10 @@ namespace Multiversions.Revit.Sample.Models
 
                 throw ;
             }
-            
+            */
+
         }
+
 
         public string GetName()
         {
