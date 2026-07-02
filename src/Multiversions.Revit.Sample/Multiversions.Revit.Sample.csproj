@@ -106,7 +106,7 @@
 	-->
   
 
-  <ItemGroup Condition="$(DefineConstants.Contains('WINFORMS')) AND ('$(TargetFramework)' == 'net46' OR '$(TargetFramework)' == 'net47' OR '$(TargetFramework)' == 'net471' OR '$(TargetFramework)' == 'net48')">
+  <ItemGroup Condition="$(DefineConstants.Contains('WINFORMS')) AND ('$(TargetFramework)' == 'net471' OR '$(TargetFramework)' == 'net48')">
 	<Reference Include="System.Xaml" />
     <Reference Include="PresentationCore" />
 	<Reference Include="PresentationFramework" />
@@ -150,10 +150,6 @@
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </EmbeddedResource>
 
-    <EmbeddedResource Remove="Resources\ToolIcon.png" />
-
-    <EmbeddedResource Remove="Resources\ToolIcon.tiff" />
-
     <Content Include="Properties\launchSettings.json">
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </Content>
@@ -165,6 +161,10 @@
     <Compile Include="Models\BusDuctCreation.cs" />
     <Compile Include="Models\RelayCommand.cs" />
     <Compile Include="Models\TheThemeChanger.cs" />
+    <Compile Include="Ribbon\ImageLoader.cs" />
+    <Compile Include="Ribbon\RibbonBuilder.cs" />
+    <Compile Include="Ribbon\RibbonButtonFactory.cs" />
+    <Compile Include="Ribbon\RibbonButtonInfo.cs" />
     <Compile Include="Services\RevitDataService.cs" />
     <Compile Include="Services\SelectRevitElement.cs" />
     <Compile Include="Storage\DuctTypeDto.cs" />
@@ -182,11 +182,6 @@
     <Page Include="Views\TestWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
     </Page>
-  </ItemGroup>
-
-  <ItemGroup>
-    <Resource Include="Resources\ToolIcon.png" />
-    <Resource Include="Resources\ToolIcon.tiff" />
   </ItemGroup>
 
   <PropertyGroup>

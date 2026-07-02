@@ -25,7 +25,8 @@ namespace Multiversions.Revit.Sample.Models
 
             Document doc = app.ActiveUIDocument.Document;
             //String formatting for the selected values
-            string info = $"Selected Duct Type: {SelectedDuctType}, Selected Duct Level: {SelectedDuctLevel}, Selected Duct System Type: {SelectedDuctSystemType}";
+            string info = $"Selected Duct Type: {SelectedDuctType}, Selected Duct Level: {SelectedDuctLevel}, Selected Duct System Type: {SelectedDuctSystemType}" +
+                $"Connector 1: {(StartConnector.MEPSystem)?.ToString()}";
 
             TaskDialog.Show("Revit", info);
             /*

@@ -14,6 +14,8 @@ namespace Multiversions.Revit.Sample.ViewModels
     {
         //Constants
         private readonly UIDocument _uiDoc;
+        private readonly DuctDataStorage  _ductDataStorage;
+
         //Implement ICommand
         public ICommand ThemeChangeCommand { get; set; }
         public ICommand SelectStartEquipmentCommand { get; set; }
@@ -91,6 +93,9 @@ namespace Multiversions.Revit.Sample.ViewModels
                                 List<DuctTypeDto> ducts,
                                 List<LevelDto> levels)
         {
+            //Loadthe connector data storage
+            _ductDataStorage = new DuctDataStorage();
+
             //Preloaded
             DuctSystemTypes = new ObservableCollection<SystemTypeDto>(systems);
             DuctTypes = new ObservableCollection<DuctTypeDto>(ducts);
@@ -118,8 +123,8 @@ namespace Multiversions.Revit.Sample.ViewModels
             _busDuctCreationHandler.SelectedDuctType = SelectedDuctType.Name;
             _busDuctCreationHandler.SelectedDuctSystemType = SelectedDuctSystem.Name;
             _busDuctCreationHandler.SelectedDuctLevel = SelectedLevel.Name;
-            _busDuctCreationHandler.StartConnector = StartConnector;
-            _busDuctCreationHandler.EndConnector = EndConnector;
+            _busDuctCreationHandler.StartConnector = _ductDataStorage.StartConnector;
+            _busDuctCreationHandler.EndConnector = _ductDataStorage.EndConnector;
             
             _busDuctCreationEventraiser.Raise();
         }

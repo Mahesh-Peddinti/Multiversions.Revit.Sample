@@ -1,4 +1,5 @@
 ﻿using Autodesk.Revit.UI;
+using Multiversions.Revit.Sample.Ribbon;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
@@ -13,15 +14,8 @@ namespace Multiversions.Revit.Sample
     {
         public Result OnStartup(UIControlledApplication application)
         {
-            RibbonPanel ribbonPanel = application.CreateRibbonPanel("MBDEVTOOLS");
-            PushButton pushButton = ribbonPanel.AddItem(new PushButtonData("Button", "ToolTester",
-                                                @"D:\REVIT API_TOOLS\MultiversionAddIn\New folder\src\bin\Debug\2026\Multiversions.Revit.Sample.dll",
-                                                "Multiversions.Revit.Sample.AddInCommand")) as PushButton;   
-           
-            pushButton.Image = new BitmapImage(new Uri(@"D:\REVIT API_TOOLS\MultiversionAddIn\New folder\src\Multiversions.Revit.Sample\Resources\ToolIcon.png"));
-            pushButton.LargeImage = new BitmapImage(new Uri(@"D:\REVIT API_TOOLS\MultiversionAddIn\New folder\src\Multiversions.Revit.Sample\Resources\ToolIcon.png"));
+            RibbonBuilder.Build(application);
 
-            
             return Result.Succeeded;
         }
 

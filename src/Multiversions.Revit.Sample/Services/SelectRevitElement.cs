@@ -13,6 +13,7 @@ namespace Multiversions.Revit.Sample.Services
 {
     public class SelectRevitElement : IExternalEventHandler
     {
+        public  DuctDataStorage _ductDataStorage;
         public void Execute(UIApplication app)
         {
             UIDocument uiDoc = app.ActiveUIDocument;
@@ -27,8 +28,8 @@ namespace Multiversions.Revit.Sample.Services
                     if (c != null && c.DuctSystemType == DuctSystemType.SupplyAir)
                     {
                         //store the connector in SelectRevitElement class for later use
-                        DuctDataStorage storage = new DuctDataStorage();
-                        storage.StartConnector = c;
+                        _ductDataStorage = new DuctDataStorage();
+                        _ductDataStorage.StartConnector = c;
                     }
                 }
 
