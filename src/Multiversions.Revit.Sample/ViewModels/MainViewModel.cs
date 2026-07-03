@@ -19,7 +19,9 @@ namespace Multiversions.Revit.Sample.ViewModels
         //Implement ICommand
         public ICommand ThemeChangeCommand { get; set; }
         public ICommand SelectStartEquipmentCommand { get; set; }
+        public ICommand SelectEndEquipmentCommand { get; set; }
         public ICommand DuctPlaceHolderCreateCommand {  get; set; }
+
         public ObservableCollection<LevelDto> DuctLevels { get;  set; }
         public ObservableCollection<DuctTypeDto> DuctTypes { get;  set; }
         public ObservableCollection<SystemTypeDto> DuctSystemTypes { get; set; }
@@ -95,6 +97,9 @@ namespace Multiversions.Revit.Sample.ViewModels
         {
             //Loadthe connector data storage
             _ductDataStorage = new DuctDataStorage();
+            
+
+
 
             //Preloaded
             DuctSystemTypes = new ObservableCollection<SystemTypeDto>(systems);
@@ -108,7 +113,10 @@ namespace Multiversions.Revit.Sample.ViewModels
             //Selection
             _ElementSelectionEventHandler = new SelectRevitElement();
             _selectionExternalEvent = ExternalEvent.Create(_ElementSelectionEventHandler);
-            SelectStartEquipmentCommand = new RelayCommand(RaiseElementSelectionEvent);
+            SelectStartEquipmentCommand = new RelayCommand(RaiseStartElementSelectionEvent);
+            SelectEndEquipmentCommand = new RelayCommand(RaiseEndElementSelectionEvent);
+            //Loading selected connector in to the class
+            _ElementSelectionEventHandler.Storage = _ductDataStorage;
 
             //Bus Duct Creation Command 
             _busDuctCreationHandler = new BusDuctCreation();
@@ -124,13 +132,28 @@ namespace Multiversions.Revit.Sample.ViewModels
             _busDuctCreationHandler.SelectedDuctSystemType = SelectedDuctSystem.Name;
             _busDuctCreationHandler.SelectedDuctLevel = SelectedLevel.Name;
             _busDuctCreationHandler.StartConnector = _ductDataStorage.StartConnector;
-            _busDuctCreationHandler.EndConnector = _ductDataStorage.EndConnector;
+            _busDuctCreationHandler.EndConnectorSet = _ductDataStorage.ConnectorSet;
             
             _busDuctCreationEventraiser.Raise();
         }
 
-        private void RaiseElementSelectionEvent()
+        private void RaiseStartElementSelectionEvent()
         {
+
+            _ElementSelectionEventHandler.Request = new ConnectorSelectionRequest
+            {
+                Message = "SelectionOperation Equipment Connector 1",
+                SelectionOperation = SelectionOperation.StartConnector,
+            };
+            _selectionExternalEvent.Raise();
+        }
+        private void RaiseEndElementSelectionEvent()
+        {
+            _ElementSelectionEventHandler.Request = new ConnectorSelectionRequest
+            {
+                Message = "SelectionOperation Equipment Connector 1",
+                SelectionOperation = SelectionOperation.ConnectorSet,
+            };
             _selectionExternalEvent.Raise();
         }
 

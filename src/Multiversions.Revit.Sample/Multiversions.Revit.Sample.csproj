@@ -165,7 +165,9 @@
     <Compile Include="Ribbon\RibbonBuilder.cs" />
     <Compile Include="Ribbon\RibbonButtonFactory.cs" />
     <Compile Include="Ribbon\RibbonButtonInfo.cs" />
+    <Compile Include="Services\ConnectorSelectionRequest.cs" />
     <Compile Include="Services\RevitDataService.cs" />
+    <Compile Include="Services\SelectionOperation.cs" />
     <Compile Include="Services\SelectRevitElement.cs" />
     <Compile Include="Storage\DuctTypeDto.cs" />
     <Compile Include="Storage\LevelDto.cs" />

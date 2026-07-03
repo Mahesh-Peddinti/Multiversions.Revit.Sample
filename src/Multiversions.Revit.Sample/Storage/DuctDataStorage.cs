@@ -36,6 +36,17 @@ namespace Multiversions.Revit.Sample.Storage
             }
         }
 
+        private ConnectorSet _connectorSet;
+        public ConnectorSet ConnectorSet
+        {
+            get { return _connectorSet; }
+            set
+            {
+                _connectorSet = value;
+                OnPropertyChanged(nameof(ConnectorSet));
+            }
+        }
+
         
 
         public event PropertyChangedEventHandler PropertyChanged;

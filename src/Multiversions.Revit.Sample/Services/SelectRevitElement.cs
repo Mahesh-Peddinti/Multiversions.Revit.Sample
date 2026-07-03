@@ -13,29 +13,44 @@ namespace Multiversions.Revit.Sample.Services
 {
     public class SelectRevitElement : IExternalEventHandler
     {
-        public  DuctDataStorage _ductDataStorage;
+        public  DuctDataStorage Storage{ get; set; }
+        public ConnectorSelectionRequest Request { get; set; }
         public void Execute(UIApplication app)
         {
             UIDocument uiDoc = app.ActiveUIDocument;
             Document doc = uiDoc.Document;
             Reference reference = uiDoc.Selection.PickObject(ObjectType.Element, "Select MEP Component");
-            FamilyInstance element = doc.GetElement(reference) as FamilyInstance;
+            FamilyInstance? element = doc.GetElement(reference) as FamilyInstance;
+
+           
+              
             if (element != null || element is FamilyInstance)
             {                
                 var connectors = element.MEPModel?.ConnectorManager?.Connectors?.Cast<Connector>();
-                foreach (Connector c in connectors)
+                switch (Request.SelectionOperation)
                 {
-                    if (c != null && c.DuctSystemType == DuctSystemType.SupplyAir)
-                    {
-                        //store the connector in SelectRevitElement class for later use
-                        _ductDataStorage = new DuctDataStorage();
-                        _ductDataStorage.StartConnector = c;
-                    }
-                }
-
-            }
-
-            TaskDialog.Show("Revit", $"Selected MEP Element :{element.Name.ToString()}");
+                    case SelectionOperation.StartConnector:
+                        foreach (Connector c in connectors)
+                        {
+                            if (c != null && c.DuctSystemType == DuctSystemType.SupplyAir)
+                            {
+                                //store the connector in SelectRevitElement class for later use
+                                Storage.StartConnector = c;
+                            }
+                        }                        
+                        break;
+                    case SelectionOperation.ConnectorSet:
+                        foreach (Connector c in connectors)
+                        {
+                            if (c != null && c.DuctSystemType == DuctSystemType.SupplyAir && c.Shape==ConnectorProfileType.Rectangular)
+                            {
+                                //store the connector in SelectRevitElement class for later use
+                                Storage.ConnectorSet = c.ConnectorManager.Connectors;
+                            }
+                        }                        
+                        break;
+                }   
+            }           
         }
 
         public string GetName()
