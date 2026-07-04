@@ -36,36 +36,53 @@ namespace Multiversions.Revit.Sample.Models
 
             TaskDialog.Show("Revit", info);
             */
-            
+            Element ductType = new FilteredElementCollector(doc)
+                                                .OfClass(typeof(DuctType))                                                
+                                                .First(x => x.Name.Contains(SelectedDuctType));
+            Element ductSystemType = new FilteredElementCollector(doc)
+                                                .OfClass(typeof(MechanicalSystemType))
+                                                .First(x => x.Name.Contains(SelectedDuctSystemType));
+            Element level = new FilteredElementCollector(doc)
+                                                .OfClass(typeof(Level))
+                                                .First(x => x.Name.Contains(SelectedDuctLevel));
+
+
+
             try
             {
                 //Using Transaction group to create bus duct
-                using(TransactionGroup tg = new TransactionGroup(doc))
+                
+                
+                using (TransactionGroup tg = new TransactionGroup(doc))
                 {
                     tg.Start();
-                    //Using Ducting system
-                    using(Transaction tx = new Transaction(doc))
+                    using (Transaction tx = new Transaction(doc, "Creating Bus Duct System"))
                     {
                         tx.Start();
-                        doc.Create.NewMechanicalSystem(StartConnector,EndConnectorSet,DuctSystemType.SupplyAir);
+                        doc.Create.NewMechanicalSystem(StartConnector, EndConnectorSet, DuctSystemType.SupplyAir);
                         tx.Commit();
                     }
+                    //Using Ducting system
+                    foreach (Connector c in EndConnectorSet)
+                    {
+                        using (Transaction txPlaceHolder = new Transaction(doc, "Creating Duct Place Holders"))
+                        {
+                            txPlaceHolder.Start();
+                            XYZ point = StartConnector.Origin as XYZ;
+                            XYZ endPoint = c.Origin as XYZ;
+                            Duct.CreatePlaceholder(doc, ductSystemType.Id, ductType.Id,level.Id, point, endPoint);
+                            txPlaceHolder.Commit();
+                        }
+                    }                    
                 }
+                
+               
                 /*
-                using(Transaction txPlaceHolder = new Transaction(doc,"Creating Duct Place Holders"))
-                {
-                    txPlaceHolder.Start();
-                    //Duct.CreatePlaceholder(doc,);
-                    txPlaceHolder.Commit();
-
-                }
-
                 using(Transaction txConvert = new Transaction(doc,"Convert Duct Place Holder in to duct"))
                 {
                     txConvert.Start();
                     //MechanicalUtils.ConvertDuctPlaceholders(doc,);
                     txConvert.Commit();
-
                 }
                 */
 

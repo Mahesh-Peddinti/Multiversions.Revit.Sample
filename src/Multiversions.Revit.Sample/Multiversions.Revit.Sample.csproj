@@ -1,11 +1,24 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
-  <PropertyGroup>
-    <Configurations>Debug;Debug One;Release</Configurations>
-  </PropertyGroup>
+   <!-- ============================================================
+       FIXES APPLIED IN THIS PASS (search "FIX:" to find them):
+       1. CopyAddinsToAppData  - glob no longer walks into sibling
+          Revit-version folders; destination path is explicit.
+       2. CleanAddinsInAppData - delete scoped to $(RevitVersion)
+          only, not every version under Addins\.
+       3. RevitVersion default - removed dead duplicate condition,
+          gave net48 / net8.0-windows their own explicit defaults.
+       No compile items, package references, or targets were removed.
+       ============================================================ -->
+	
+    <!-- ==================== BUILD CONFIGURATIONS ==================== -->
+    <PropertyGroup>
+        <Configurations>Debug;Debug One;Release</Configurations>
+    </PropertyGroup>
 
-  <PropertyGroup>
-    <!-- Please remove the targets you don't need in order
+    <!-- ==================== MULTI-TARGETING / REVIT VERSION MAP ==================== -->
+	<PropertyGroup>
+		<!-- Please remove the targets you don't need in order
       to exclude Revit versions your add-in won't support
       use the list below for matching Revit version with .NET target
               2014  |  net40
@@ -22,80 +35,85 @@
               2025  |  net8.0-windows
               2026  |  net8.0-windows
       For example you can exclude Revit 2014, by simply removing net40 target belows
-      -->
+      -->  
     <TargetFrameworks>net48;net8.0-windows</TargetFrameworks>
 	<UseWPF>true</UseWPF>
-	  <Nullable>enable</Nullable>
-	  <LangVersion>Latest</LangVersion>
-    <RuntimeIdentifiers>win</RuntimeIdentifiers>
-	  <RevitVersion Condition=" '$(RevitVersion)' == '' ">2025</RevitVersion>
-	  <RevitVersion Condition=" '$(RevitVersion)' == '' ">2026</RevitVersion>
-  </PropertyGroup>
-    <!--
-        <PropertyGroup Condition=" '$(TargetFramework)' == 'net46' ">
-            <RevitVersion>2018</RevitVersion>
-	    </PropertyGroup>
-		<PropertyGroup Condition=" '$(TargetFramework)' == 'net47' ">
-            <RevitVersion>2019</RevitVersion>
-        </PropertyGroup>
-        <PropertyGroup Condition=" '$(TargetFramework)' == 'net471' ">
-            <RevitVersion>2020</RevitVersion>
-        </PropertyGroup>
-    -->
-  
-  
-  
-  <PropertyGroup Condition=" '$(TargetFramework)' == 'net48' ">
-    <RevitVersion>2021</RevitVersion>
+	<Nullable>enable</Nullable>
+	<LangVersion>Latest</LangVersion>
+    <RuntimeIdentifiers>win</RuntimeIdentifiers>	  
   </PropertyGroup>
 
+	<!-- FIX: previous lines both used the identical unconditioned
+       Condition=" '$(RevitVersion)' == '' ", so the first one to run (2025) always "won" and the second (2026) was dead code -
+       meaning any build that didn't go through the Build20XX fan-out targets silently defaulted to 2025 instead of 2026.
+       Each moniker now gets its own explicit, reachable default. -->    
+	<PropertyGroup Condition="'$(TargetFramework)' == 'net48' AND '$(RevitVersion)' == ''">
+		<RevitVersion>2021</RevitVersion>
+	</PropertyGroup>
+	<PropertyGroup Condition="'$(TargetFramework)' == 'net8.0-windows' AND '$(RevitVersion)' == ''">
+		<RevitVersion>2026</RevitVersion>
+	</PropertyGroup>
+
+	<!-- Legacy version map retained for reference / future re-enable -->
+	<!--
+      <PropertyGroup Condition=" '$(TargetFramework)' == 'net46' ">
+          <RevitVersion>2018</RevitVersion>
+      </PropertyGroup>
+      <PropertyGroup Condition=" '$(TargetFramework)' == 'net47' ">
+          <RevitVersion>2019</RevitVersion>
+      </PropertyGroup>
+      <PropertyGroup Condition=" '$(TargetFramework)' == 'net471' ">
+          <RevitVersion>2020</RevitVersion>
+      </PropertyGroup> -->   
+
   <PropertyGroup Condition="'$(Configuration)' == 'Debug One'">
-    <!-- You could debug just ONE addin version,
-         instead of building all the versions above.
-         Just put ONE target from the list above
-         e.g. if you want to debug ONLY Revit 2019,
+    <!-- You could debug just ONE addin version,instead of building all the versions above.
+         Just put ONE target from the list above e.g. if you want to debug ONLY Revit 2019,
          put net47 below and switch to 'Debug One' configuration
       -->
     <TargetFrameworks>net48</TargetFrameworks>
   </PropertyGroup>
 
-  <PropertyGroup>
-    <!-- Forcibly set platform to 'x64' and ignore architecture-related problems -->
-    <PlatformTarget>x64</PlatformTarget>
-    <Platforms>x64</Platforms>
-    <ResolveAssemblyWarnOrErrorOnTargetArchitectureMismatch>None</ResolveAssemblyWarnOrErrorOnTargetArchitectureMismatch>
+    <!-- ==================== GLOBAL BUILD SETTINGS ==================== -->
+	
+    <PropertyGroup>
+        <!-- Forcibly set platform to 'x64' and ignore architecture-related problems -->
+        <PlatformTarget>x64</PlatformTarget>
+        <Platforms>x64</Platforms>
+        <ResolveAssemblyWarnOrErrorOnTargetArchitectureMismatch>None</ResolveAssemblyWarnOrErrorOnTargetArchitectureMismatch>
 
-    <!-- Force the project to use the legacy debugger engine -->
-    <DebugEngines>{351668CC-8477-4fbf-BFE3-5F1006E4DB1F}</DebugEngines>
+        <!-- Force the project to use the legacy debugger engine -->
+        <DebugEngines>{351668CC-8477-4fbf-BFE3-5F1006E4DB1F}</DebugEngines>
 
-    <!-- Invert the behavior of new .csproj format - exclude files by default -->
-    <EnableDefaultCompileItems>false</EnableDefaultCompileItems>
-    <EnableDefaultItems>false</EnableDefaultItems>
+        <!-- Invert the behavior of new .csproj format - exclude files by default -->
+        <EnableDefaultCompileItems>false</EnableDefaultCompileItems>
+        <EnableDefaultItems>false</EnableDefaultItems>
 
-    <!-- Define handy symbols to use in the code in order to accommodate different Revit versions,
-    e.g. by wrapping legacy / deprecated API calls with #if REVIT2014 | REVIT2015 -->
-    <DefineConstants>REVIT$(RevitVersion);WINFORMS</DefineConstants>
-    <PreprocessorDefinitions>$(DefineConstants)</PreprocessorDefinitions>
+        <!-- Define handy symbols to use in the code in order to accommodate different Revit versions,
+        e.g. by wrapping legacy / deprecated API calls with #if REVIT2014 | REVIT2015 -->
+        <DefineConstants>REVIT$(RevitVersion);WINFORMS</DefineConstants>
+        <PreprocessorDefinitions>$(DefineConstants)</PreprocessorDefinitions>
 
-    <!-- Multiple targets can cause obj folder locking by concurrent builds -->
-    <BuildInParallel>false</BuildInParallel>
+        <!-- Multiple targets can cause obj folder locking by concurrent builds -->
+        <BuildInParallel>false</BuildInParallel>
 
-    <!-- Override 'OutputPath' to Debug/Release + Revit version -->
-    <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
-    <OutputPath>..\bin\$(Configuration)\$(RevitVersion)</OutputPath>
+        <!-- Override 'OutputPath' to Debug/Release + Revit version -->
+        <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
+        <OutputPath>..\bin\$(Configuration)\$(RevitVersion)</OutputPath>
   </PropertyGroup>
 
   <!--We can define our custom preprocessor constants to simplify our project code-->
   <PropertyGroup Condition="'$(RevitVersion)' != '2018' AND '$(RevitVersion)' != '2019' AND '$(RevitVersion)' != '2020'">
-    <DefineConstants>$(DefineConstants);USE_FORGETYPEID</DefineConstants>
-    <PreprocessorDefinitions>$(DefineConstants)</PreprocessorDefinitions>
+        <DefineConstants>$(DefineConstants);USE_FORGETYPEID</DefineConstants>
+        <PreprocessorDefinitions>$(DefineConstants)</PreprocessorDefinitions>
   </PropertyGroup>
 
   <PropertyGroup Condition="$(Configuration.Contains('Debug'))">
-    <DefineConstants>$(DefineConstants);DEBUG</DefineConstants>
-    <DebugType>full</DebugType>
-    <OutputPath>..\bin\Debug\$(RevitVersion)</OutputPath>
+        <DefineConstants>$(DefineConstants);DEBUG</DefineConstants>
+        <DebugType>full</DebugType>
+        <OutputPath>..\bin\Debug\$(RevitVersion)</OutputPath>
   </PropertyGroup>
+	<!-- ==================== CONDITIONAL FRAMEWORK / PACKAGE REFERENCES ==================== -->
     <!--
 	<ItemGroup Condition="'$(TargetFramework)' == 'net46' OR '$(TargetFramework)' == 'net47' OR '$(TargetFramework)' == 'net471' OR '$(TargetFramework)' == 'net48'">
 	    <Reference Include="PresentationCore" />
@@ -107,17 +125,17 @@
   
 
   <ItemGroup Condition="$(DefineConstants.Contains('WINFORMS')) AND ('$(TargetFramework)' == 'net471' OR '$(TargetFramework)' == 'net48')">
-	<Reference Include="System.Xaml" />
-    <Reference Include="PresentationCore" />
-	<Reference Include="PresentationFramework" />
-	<Reference Include="WindowsBase" />
+	    <Reference Include="System.Xaml" />
+        <Reference Include="PresentationCore" />
+	    <Reference Include="PresentationFramework" />
+	    <Reference Include="WindowsBase" />
   </ItemGroup>
 
   <ItemGroup Condition="'$(TargetFramework)' == 'net8.0-windows'">
-    <FrameworkReference Include="Microsoft.WindowsDesktop.App" />
-    <PackageReference Include="System.Drawing.Common">		
-        <Version>8.0.3</Version>
-    </PackageReference>	
+        <FrameworkReference Include="Microsoft.WindowsDesktop.App" />
+        <PackageReference Include="System.Drawing.Common">		
+            <Version>8.0.3</Version>
+        </PackageReference>	
   </ItemGroup>
 
   <ItemGroup>
@@ -140,6 +158,7 @@
     </ItemGroup>
   </Target>
 
+	<!-- ==================== CONTENT / RESOURCES ==================== -->
   <ItemGroup>
     <!-- Add-in manifest is processed via MSBuild -->
     <Content Include="Manifests/AddinTemplate.addin">
@@ -154,7 +173,7 @@
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
-
+	<!-- ==================== COMPILE ITEMS ==================== -->
   <ItemGroup>
     <Compile Include="AddInApplication.cs" />
     <Compile Include="AddInCommand.cs" />
@@ -185,7 +204,8 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
   </ItemGroup>
-
+	
+	<!-- ==================== ASSEMBLY / PACKAGE METADATA ==================== -->
   <PropertyGroup>
     <RootNamespace>Multiversions.Revit.Sample</RootNamespace>
     <AssemblyName>Multiversions.Revit.Sample</AssemblyName>
@@ -198,7 +218,8 @@
     <Version>0.0.1</Version>
     <NeutralLanguage>en</NeutralLanguage>
   </PropertyGroup>
-
+	
+	<!-- ==================== ASSEMBLY / PACKAGE METADATA ==================== -->
   <Target Name="CreateAddinManifest" AfterTargets="AfterBuild">
     <ItemGroup>
       <AddinManifest Include="$(OutputPath)\$(AssemblyName).addin" />
@@ -250,23 +271,48 @@
     </Task>
   </UsingTask>
 
+	<!-- ==================== LOCAL DEBUG DEPLOYMENT (VERSION-ISOLATED) ==================== -->
+	<!-- FIX: was "$(OutputPath)\..\**\*.addin" which walks UP a level out of the current RevitVersion folder and then recurses back down through
+       EVERY sibling version folder under bin\$(Configuration)\ - so a 2026 build was also re-copying already-built 2024/2023/2022 .addin files.
+       Scoped to just this pass's own OutputPath, non-recursive.
+       DestinationFolder is now explicit with $(RevitVersion) instead of relying on %(RecursiveDir), which would otherwise be empty now that
+       the Include glob no longer has a recursive "**" segment. -->
+
   <Target Name="CopyAddinsToAppData" AfterTargets="CreateAddinManifest" Condition="$(Configuration.Contains('Debug'))">
     <!-- Copy newly compiled add-in files to AppData folder (before starting the debugger) -->
-    <Message Importance="high" Text="Copying addin file into Revit Addin folder" />
+    <Message Importance="high" Text="Copying $(RevitVersion) addin file into Revit $(RevitVersion) Addins folder" />
     <ItemGroup>
-      <AddinFiles Include="$(OutputPath)\..\**\*.addin" />
+		<!--This line copies the add-in files for the into all Revit versions, this can be used "Release or Client deploymment" 
+		<AddinFiles Include="$(OutputPath)\..\**\*.addin" />
+		-->
+		<!--This will targets only the built version and copy the add-in files in to the current Revit version's folder -->
+		<AddinFiles Include="$(OutputPath)\*.addin" />
     </ItemGroup>
-    <Copy SourceFiles="@(AddinFiles)" DestinationFolder="$(AppData)\Autodesk\Revit\Addins\%(RecursiveDir)" SkipUnchangedFiles="true" OverwriteReadOnlyFiles="true" Retries="3" RetryDelayMilliseconds="300" />
+	  
+	  <!--FUTURE FIX: consider using $(RevitVersion) instead of %(RecursiveDir) for the destination folder 
+	  DestinationFolder="$(AppData)\Autodesk\Revit\Addins\%(RecursiveDir)" 
+	  -->
+    <Copy SourceFiles="@(AddinFiles)" 		  
+		  DestinationFolder="$(AppData)\Autodesk\Revit\Addins\$(RevitVersion)" 
+		  SkipUnchangedFiles="true" 
+		  OverwriteReadOnlyFiles="true" 
+		  Retries="3" 
+		  RetryDelayMilliseconds="300" />
   </Target>
 
+	<!-- FIX: was "...\Addins\**\$(AssemblyName).*" which deletes the assembly from EVERY Revit version's Addins folder on any clean, regardless of
+       which RevitVersion triggered it. Scoped to $(RevitVersion) only. -->
   <Target Name="CleanAddinsInAppData" AfterTargets="AfterClean">
     <!-- Delete previously deployed to AppData folder add-in files -->
     <ItemGroup>
-      <AddinFiles Include="$(AppData)\Autodesk\Revit\Addins\**\$(AssemblyName).*" />
+      <AddinFiles Include="$(AppData)\Autodesk\Revit\Addins\$(RevitVersion)\$(AssemblyName).*" />
     </ItemGroup>
     <Delete Files="@(AddinFiles)" />
   </Target>
 
+	<!-- ==================== MULTI-VERSION BUILD FAN-OUT ==================== -->
+	<!-- Each target re-invokes MSBuild on this same project file with RevitVersion forced as a global property, so net48 can produce 2022/2023/2024 as
+       separate, fully isolated builds beyond the base net48 (2021) pass. -->
   <Target Name="Build2022" AfterTargets="DispatchToInnerBuilds">
     <Message Importance="high" Text="*** running post-dispatch builds ***" />
     <MSBuild Projects="$(MSBuildProjectFile)" Properties="Configuration=$(Configuration); TargetFramework=net48; RevitVersion=2022"></MSBuild>
