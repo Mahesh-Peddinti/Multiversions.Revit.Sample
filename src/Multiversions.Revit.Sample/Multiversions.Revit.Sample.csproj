@@ -185,6 +185,7 @@
     <Compile Include="Ribbon\RibbonButtonFactory.cs" />
     <Compile Include="Ribbon\RibbonButtonInfo.cs" />
     <Compile Include="Services\ConnectorSelectionRequest.cs" />
+    <Compile Include="Services\EquipmentElement.cs" />
     <Compile Include="Services\RevitDataService.cs" />
     <Compile Include="Services\SelectionOperation.cs" />
     <Compile Include="Services\SelectRevitElement.cs" />
@@ -292,12 +293,7 @@
 	  <!--FUTURE FIX: consider using $(RevitVersion) instead of %(RecursiveDir) for the destination folder 
 	  DestinationFolder="$(AppData)\Autodesk\Revit\Addins\%(RecursiveDir)" 
 	  -->
-    <Copy SourceFiles="@(AddinFiles)" 		  
-		  DestinationFolder="$(AppData)\Autodesk\Revit\Addins\$(RevitVersion)" 
-		  SkipUnchangedFiles="true" 
-		  OverwriteReadOnlyFiles="true" 
-		  Retries="3" 
-		  RetryDelayMilliseconds="300" />
+    <Copy SourceFiles="@(AddinFiles)" DestinationFolder="$(AppData)\Autodesk\Revit\Addins\$(RevitVersion)" SkipUnchangedFiles="true" OverwriteReadOnlyFiles="true" Retries="3" RetryDelayMilliseconds="300" />
   </Target>
 
 	<!-- FIX: was "...\Addins\**\$(AssemblyName).*" which deletes the assembly from EVERY Revit version's Addins folder on any clean, regardless of

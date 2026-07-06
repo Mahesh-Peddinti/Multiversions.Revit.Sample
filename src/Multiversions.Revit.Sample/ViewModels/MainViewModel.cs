@@ -3,6 +3,7 @@ using Autodesk.Revit.UI;
 using Multiversions.Revit.Sample.Models;
 using Multiversions.Revit.Sample.Services;
 using Multiversions.Revit.Sample.Storage;
+using Multiversions.Revit.Sample.Views;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
@@ -121,7 +122,8 @@ namespace Multiversions.Revit.Sample.ViewModels
             //Bus Duct Creation Command 
             _busDuctCreationHandler = new BusDuctCreation();
             _busDuctCreationEventraiser = ExternalEvent.Create(_busDuctCreationHandler);
-            DuctPlaceHolderCreateCommand = new RelayCommand(RaiseBusDuctCreationEvent);         
+            DuctPlaceHolderCreateCommand = new RelayCommand(RaiseBusDuctCreationEvent); 
+            
 
         }
         
