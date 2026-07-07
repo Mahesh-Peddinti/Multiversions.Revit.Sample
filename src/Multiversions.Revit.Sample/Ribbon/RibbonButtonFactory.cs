@@ -1,32 +1,27 @@
 ﻿using Autodesk.Revit.UI;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Multiversions.Revit.Sample.Ribbon
 {
     public static class RibbonButtonFactory
     {
+        // Cache assembly path to avoid repeated reflection calls
+        private static readonly string _assemblyPath = Assembly.GetExecutingAssembly().Location;
+
         public static PushButtonData Create(
             RibbonButtonInfo info)
         {
-            string assemblyPath =
-                Assembly.GetExecutingAssembly().Location;
-
             PushButtonData button =
                 new PushButtonData(
                     info.Name,
                     info.Text,
-                    assemblyPath,
+                    _assemblyPath,
                     info.CommandClass);
 
             button.ToolTip = info.Tooltip;
 
+            // Load images via ImageLoader (which now caches and disposes streams)
             button.LargeImage = ImageLoader.Load(info.LargeImage);
-
             button.Image = ImageLoader.Load(info.SmallImage);
 
             return button;
