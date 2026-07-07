@@ -1,4 +1,6 @@
-﻿using System.IO;
+﻿using System;
+using System.Collections.Concurrent;
+using System.IO;
 using System.Reflection;
 using System.Windows.Media.Imaging;
 
@@ -6,20 +8,31 @@ namespace Multiversions.Revit.Sample.Ribbon
 {
     public static class ImageLoader
     {
+        // Cache decoded, frozen BitmapImage instances keyed by resource name.
+        private static readonly ConcurrentDictionary<string, BitmapImage> _cache = new ConcurrentDictionary<string, BitmapImage>(StringComparer.OrdinalIgnoreCase);
+
         public static BitmapImage Load(string imageName)
         {
-            Assembly assembly = Assembly.GetExecutingAssembly();
+            if (string.IsNullOrEmpty(imageName)) return null;
 
-            Stream stream = assembly.GetManifestResourceStream($"Multiversions.Revit.Sample.Resources.{imageName}");
+            return _cache.GetOrAdd(imageName, key =>
+            {
+                Assembly assembly = Assembly.GetExecutingAssembly();
+                string resourceName = $"Multiversions.Revit.Sample.Resources.{key}";
 
-            BitmapImage image = new BitmapImage();
+                using (Stream stream = assembly.GetManifestResourceStream(resourceName))
+                {
+                    if (stream == null) return null;
 
-            image.BeginInit();
-            image.StreamSource = stream;
-            image.CacheOption = BitmapCacheOption.OnLoad;
-            image.EndInit();
-
-            return image;
+                    BitmapImage image = new BitmapImage();
+                    image.BeginInit();
+                    image.StreamSource = stream;
+                    image.CacheOption = BitmapCacheOption.OnLoad; // ensure data is loaded while stream is open
+                    image.EndInit();
+                    image.Freeze(); // make it shareable across threads and reduce overhead
+                    return image;
+                }
+            });
         }
     }
 }
