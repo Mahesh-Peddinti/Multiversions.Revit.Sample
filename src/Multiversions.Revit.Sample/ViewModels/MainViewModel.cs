@@ -98,10 +98,6 @@ namespace Multiversions.Revit.Sample.ViewModels
         {
             //Loadthe connector data storage
             _ductDataStorage = new DuctDataStorage();
-            
-
-
-
             //Preloaded
             DuctSystemTypes = new ObservableCollection<SystemTypeDto>(systems);
             DuctTypes = new ObservableCollection<DuctTypeDto>(ducts);
@@ -122,19 +118,18 @@ namespace Multiversions.Revit.Sample.ViewModels
             //Bus Duct Creation Command 
             _busDuctCreationHandler = new BusDuctCreation();
             _busDuctCreationEventraiser = ExternalEvent.Create(_busDuctCreationHandler);
-            DuctPlaceHolderCreateCommand = new RelayCommand(RaiseBusDuctCreationEvent); 
-            
+            DuctPlaceHolderCreateCommand = new RelayCommand(RaiseBusDuctCreationEvent);             
 
         }
         
         private void RaiseBusDuctCreationEvent()
         {
             //Load all the Data that need to raise the event
-            _busDuctCreationHandler.SelectedDuctType = SelectedDuctType.Name;
-            _busDuctCreationHandler.SelectedDuctSystemType = SelectedDuctSystem.Name;
-            _busDuctCreationHandler.SelectedDuctLevel = SelectedLevel.Name;
-            _busDuctCreationHandler.StartConnector = _ductDataStorage.StartConnector;
-            _busDuctCreationHandler.EndConnectorSet = _ductDataStorage.ConnectorSet;
+            //_busDuctCreationHandler.SelectedDuctType = SelectedDuctType.Name;
+            //_busDuctCreationHandler.SelectedDuctSystemType = SelectedDuctSystem.Name;
+            //_busDuctCreationHandler.SelectedDuctLevel = SelectedLevel.Name;
+            //_busDuctCreationHandler.StartConnector = _ductDataStorage.StartConnector;
+            //_busDuctCreationHandler.EndConnectorSet = _ductDataStorage.ConnectorSet;
             
             _busDuctCreationEventraiser.Raise();
         }

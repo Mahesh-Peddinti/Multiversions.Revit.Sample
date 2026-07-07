@@ -38,23 +38,22 @@ namespace Multiversions.Revit.Sample.Models
 
             TaskDialog.Show("Revit", info);
             */
-            Element ductType = new FilteredElementCollector(doc)
-                                                .OfClass(typeof(DuctType))
-                                                .First(x => x.Name.Contains(SelectedDuctType));
-            Element ductSystemType = new FilteredElementCollector(doc)
-                                                .OfClass(typeof(MechanicalSystemType))
-                                                .First(x => x.Name.Contains(SelectedDuctSystemType));
+            //Element ductType = new FilteredElementCollector(doc)
+            //                                    .OfClass(typeof(DuctType))
+            //                                    .First(x => x.Name.Contains(SelectedDuctType));
+            //Element ductSystemType = new FilteredElementCollector(doc)
+            //                                    .OfClass(typeof(MechanicalSystemType))
+            //                                    .First(x => x.Name.Contains("Mitered Elbows / Taps"));
             
             //Level level = new FilteredElementCollector(doc)
             //                                    .OfClass(typeof(Level))
             //                                    .FirstOrDefault(x => x.Name.Contains(SelectedDuctLevel)) as Level;
             
-            Func<Element, bool> isRectangularRadiusDuctType = dt => dt.Name.Contains("Radius Elbows / Tees");
+            Func<Element, bool> isRectangularRadiusDuctType = dt => dt.Name.Contains(SelectedDuctType);
 
-            //Element ductType
-            //  = new FilteredElementCollector(doc)
-            //    .OfClass(typeof(DuctType))
-            //    .First<Element>(isRectangularRadiusDuctType);
+            Element ductType = new FilteredElementCollector(doc)
+                                .OfClass(typeof(DuctType))
+                                .First<Element>(isRectangularRadiusDuctType);
 
             // Find Level 1 to place ductwork
 
@@ -68,24 +67,21 @@ namespace Multiversions.Revit.Sample.Models
 
             // Find all mechanical equipment elements
 
-            List<BuiltInCategory> cats
-              = new List<BuiltInCategory>(2);
+            List<BuiltInCategory> cats = new List<BuiltInCategory>();
 
             cats.Add(BuiltInCategory.OST_MechanicalEquipment);
             cats.Add(BuiltInCategory.OST_DuctTerminal);
 
-            FilteredElementCollector equipment
-              = new FilteredElementCollector(doc)
-                .OfClass(typeof(FamilyInstance))
-                .WherePasses(new ElementMulticategoryFilter(
-                  cats));
+            FilteredElementCollector equipment = new FilteredElementCollector(doc)
+                                                .OfClass(typeof(FamilyInstance))
+                                                .WherePasses(new ElementMulticategoryFilter(cats));
 
 
 
             //
             List<FamilyInstance> familyInstances = new List<FamilyInstance>();
-            familyInstances.Add(StartConnector.Owner as FamilyInstance);
-            familyInstances.AddRange(EndConnectorSet.Cast<Connector>().Select(x => x.Owner as FamilyInstance));
+            //familyInstances.Add(StartConnector.Owner as FamilyInstance);
+            //familyInstances.AddRange(EndConnectorSet.Cast<Connector>().Select(x => x.Owner as FamilyInstance));
             List<EquipmentElement> equipmentElements = new List<EquipmentElement>();                       
 
             foreach (FamilyInstance fi in equipment)
@@ -162,7 +158,7 @@ namespace Multiversions.Revit.Sample.Models
                     newSystemCS.Insert(e.SupplyAirConnector);
                 }
             }
-            doc.Create.NewMechanicalSystem(baseConnector,
+            MechanicalSystem mechanicalSystem = doc.Create.NewMechanicalSystem(baseConnector,
               newSystemCS, DuctSystemType.SupplyAir);
 
             t.Commit();
@@ -190,7 +186,7 @@ namespace Multiversions.Revit.Sample.Models
                   e.ConnectionPoint.Y, wayPoint.Z);
 
                 Duct duct = Duct.CreatePlaceholder(doc, 
-                                                    ductSystemType.Id,
+                                                    mechanicalSystem.Id,
                                                     ductType.Id,                                                    
                                                     level1.Id, 
                                                     e.ConnectionPoint,
@@ -226,7 +222,7 @@ namespace Multiversions.Revit.Sample.Models
                 t.Start("Create placeholder duct");
 
                 Duct nextDuct = Duct.CreatePlaceholder(doc,
-                                                        ductSystemType.Id,
+                                                        mechanicalSystem.Id,
                                                         ductType.Id,                                                         
                                                         level1.Id, 
                                                         nextConnectorPoint,
@@ -250,7 +246,7 @@ namespace Multiversions.Revit.Sample.Models
                 t.Start("Create placeholder duct");
 
                 nextDuct = Duct.CreatePlaceholder(doc, 
-                                                    ductSystemType.Id, 
+                                                    mechanicalSystem.Id, 
                                                     ductType.Id, 
                                                     level1.Id,
                                                     nextNextConnector.Origin, 
