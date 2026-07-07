@@ -4,16 +4,12 @@ using Autodesk.Revit.DB.Mechanical;
 using Multiversions.Revit.Sample.Storage;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Multiversions.Revit.Sample.Services
 {
     public class RevitDataService
     {
         private readonly Autodesk.Revit.DB.Document _doc;
-        
 
         public RevitDataService(Autodesk.Revit.DB.Document document)
         {
@@ -22,42 +18,62 @@ namespace Multiversions.Revit.Sample.Services
 
         public List<SystemTypeDto> GetSystemTypes()
         {
+            var result = new List<SystemTypeDto>();
 
-            return new FilteredElementCollector(_doc)
-               .OfClass(typeof(MEPSystemType))
-               .Cast<MEPSystemType>()
-               .Select(x => new SystemTypeDto
-               {
-                   ID = x.Id,
-                   Name = x.Name
-               })
-            .ToList();               
+            var collector = new FilteredElementCollector(_doc).OfClass(typeof(MEPSystemType));
+            foreach (Element e in collector)
+            {
+                var sys = e as MEPSystemType;
+                if (sys == null) continue;
+
+                result.Add(new SystemTypeDto
+                {
+                    ID = sys.Id,
+                    Name = sys.Name
+                });
+            }
+
+            return result;
         }
 
         public List<DuctTypeDto> GetDuctTypes()
         {
-            return new FilteredElementCollector(_doc)
-                .OfClass(typeof(DuctType))
-                .Cast<DuctType>()
-                .Select(x => new DuctTypeDto
+            var result = new List<DuctTypeDto>();
+
+            var collector = new FilteredElementCollector(_doc).OfClass(typeof(DuctType));
+            foreach (Element e in collector)
+            {
+                var dt = e as DuctType;
+                if (dt == null) continue;
+
+                result.Add(new DuctTypeDto
                 {
-                    Id = x.Id,
-                    Name = x.Name
-                })
-                .ToList();
+                    Id = dt.Id,
+                    Name = dt.Name
+                });
+            }
+
+            return result;
         }
 
         public List<LevelDto> GetLevels()
         {
-            return new FilteredElementCollector(_doc)
-                .OfClass(typeof(Level))
-                .Cast<Level>()
-                .Select(x => new LevelDto
+            var result = new List<LevelDto>();
+
+            var collector = new FilteredElementCollector(_doc).OfClass(typeof(Level));
+            foreach (Element e in collector)
+            {
+                var lvl = e as Level;
+                if (lvl == null) continue;
+
+                result.Add(new LevelDto
                 {
-                    Id = x.Id,
-                    Name = x.Name
-                })
-                .ToList();
+                    Id = lvl.Id,
+                    Name = lvl.Name
+                });
+            }
+
+            return result;
         }
     }
 }
