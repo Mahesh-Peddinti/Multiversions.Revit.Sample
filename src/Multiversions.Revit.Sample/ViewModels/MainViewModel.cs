@@ -4,6 +4,7 @@ using Multiversions.Revit.Sample.Models;
 using Multiversions.Revit.Sample.Services;
 using Multiversions.Revit.Sample.Storage;
 using Multiversions.Revit.Sample.Views;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
@@ -22,6 +23,7 @@ namespace Multiversions.Revit.Sample.ViewModels
         public ICommand SelectStartEquipmentCommand { get; set; }
         public ICommand SelectEndEquipmentCommand { get; set; }
         public ICommand DuctPlaceHolderCreateCommand {  get; set; }
+        public ICommand ConvertToDuctCommand { get; set; }
 
         public ObservableCollection<LevelDto> DuctLevels { get;  set; }
         public ObservableCollection<DuctTypeDto> DuctTypes { get;  set; }
@@ -91,6 +93,9 @@ namespace Multiversions.Revit.Sample.ViewModels
         //Bus Duct Creation 
         private readonly BusDuctCreation _busDuctCreationHandler;
         private readonly ExternalEvent _busDuctCreationEventraiser;
+        //convert placeholder to duct
+        private readonly ConvertPlaceholderToDuct _convertPlaceholderToDuctHandler;
+        private readonly ExternalEvent _convertPlaceholderToDuctEventraiser;
 
         public MainViewModel(   List<SystemTypeDto> systems,
                                 List<DuctTypeDto> ducts,
@@ -118,16 +123,26 @@ namespace Multiversions.Revit.Sample.ViewModels
             //Bus Duct Creation Command 
             _busDuctCreationHandler = new BusDuctCreation();
             _busDuctCreationEventraiser = ExternalEvent.Create(_busDuctCreationHandler);
-            DuctPlaceHolderCreateCommand = new RelayCommand(RaiseBusDuctCreationEvent);             
+            DuctPlaceHolderCreateCommand = new RelayCommand(RaiseBusDuctCreationEvent);
+
+            //Convert Placeholder to Duct Command
+            _convertPlaceholderToDuctHandler = new ConvertPlaceholderToDuct();
+            _convertPlaceholderToDuctEventraiser = ExternalEvent.Create(_convertPlaceholderToDuctHandler);
+            ConvertToDuctCommand = new RelayCommand(RaiseConvertPlaceholderToDuctEvent);
 
         }
-        
+
+        private void RaiseConvertPlaceholderToDuctEvent()
+        {
+            _convertPlaceholderToDuctEventraiser.Raise();
+        }
+
         private void RaiseBusDuctCreationEvent()
         {
             //Load all the Data that need to raise the event
-            //_busDuctCreationHandler.SelectedDuctType = SelectedDuctType.Name;
-            //_busDuctCreationHandler.SelectedDuctSystemType = SelectedDuctSystem.Name;
-            //_busDuctCreationHandler.SelectedDuctLevel = SelectedLevel.Name;
+            _busDuctCreationHandler.SelectedDuctType = SelectedDuctType.Name;
+            _busDuctCreationHandler.SelectedDuctSystemType = SelectedDuctSystem.Name;
+            _busDuctCreationHandler.SelectedDuctLevel = SelectedLevel.Name;
             //_busDuctCreationHandler.StartConnector = _ductDataStorage.StartConnector;
             //_busDuctCreationHandler.EndConnectorSet = _ductDataStorage.ConnectorSet;
             
