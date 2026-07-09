@@ -2,6 +2,8 @@
 using Autodesk.Revit.DB.Mechanical;
 using Autodesk.Revit.UI;
 using Multiversions.Revit.Sample.Services;
+using Multiversions.Revit.Sample.Storage;
+using Multiversions.Revit.Sample.ViewModels;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -18,10 +20,12 @@ namespace Multiversions.Revit.Sample.Models
         public string SelectedDuctLevel { get; set; }
         public string SelectedDuctSystemType { get; set; }
 
+        public MainViewModel _viewModel { get; set; }
+
         public void Execute(UIApplication app)
         {
             Document doc = app.ActiveUIDocument.Document;
-
+           
             // Resolve duct type
             DuctType ductType = new FilteredElementCollector(doc)
                                 .OfClass(typeof(DuctType))
@@ -45,6 +49,7 @@ namespace Multiversions.Revit.Sample.Models
                                 .OfClass(typeof(Level))
                                 .Cast<Level>()
                                 .FirstOrDefault(x => x.Name.Contains(SelectedDuctLevel));
+            
 
             if (level == null)
                 throw new InvalidOperationException($"Level '{SelectedDuctLevel}' not found.");
@@ -62,6 +67,7 @@ namespace Multiversions.Revit.Sample.Models
                 .Cast<FamilyInstance>();
 
             List<EquipmentElement> equipmentElements = new List<EquipmentElement>();
+            List<EquipmentDto> equipmentDtos = new List<EquipmentDto>();
 
             foreach (FamilyInstance fi in equipment)
             {
@@ -75,9 +81,14 @@ namespace Multiversions.Revit.Sample.Models
                         XYZ p = c.Origin;
                         XYZ v = c.CoordinateSystem.BasisZ;
                         equipmentElements.Add(new EquipmentElement(fi, c, p, v));
+
+                        equipmentDtos.Add(new EquipmentDto { Id = fi.Id, Location = p, Name = fi.Name });
+
                     }
                 }
             }
+            // Ensure we have at least one equipment element
+            //_viewModel.UpdatePreview(equipmentElements);
 
             if (!equipmentElements.Any())
                 throw new InvalidOperationException("No valid equipment connectors found.");

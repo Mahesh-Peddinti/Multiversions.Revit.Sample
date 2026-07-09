@@ -191,6 +191,7 @@
     <Compile Include="Services\SelectionOperation.cs" />
     <Compile Include="Services\SelectRevitElement.cs" />
     <Compile Include="Storage\DuctTypeDto.cs" />
+    <Compile Include="Storage\EquipmentDto.cs" />
     <Compile Include="Storage\LevelDto.cs" />
     <Compile Include="Storage\SystemTypeDto.cs" />
     <Compile Include="Storage\DuctDataStorage.cs" />

@@ -109,13 +109,16 @@
                 Background="#1E2530"
                 CornerRadius="10">
                     <Grid>
-                        <TextBlock
-                        Text="3D Route Preview"
-                        FontSize="22"
-                        FontWeight="Bold"
-                        Foreground="#00B4FF"
-                        HorizontalAlignment="Center"
-                        VerticalAlignment="Center"/>
+                        <ItemsControl ItemsSource="{Binding EquipmentPreview}">
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate>
+                                    <Ellipse Width="10" Height="10"
+                                            Fill="Blue"
+                                            Canvas.Left="{Binding Location.X}"
+                                            Canvas.Top="{Binding Location.Y}" />
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
                     </Grid>
                 </Border>
             </Grid>

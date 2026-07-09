@@ -24,10 +24,25 @@ namespace Multiversions.Revit.Sample.ViewModels
         public ICommand SelectEndEquipmentCommand { get; set; }
         public ICommand DuctPlaceHolderCreateCommand {  get; set; }
         public ICommand ConvertToDuctCommand { get; set; }
+        public ICommand PreviewCommand { get; }
+        public ObservableCollection<EquipmentElement> EquipmentPreview { get; }
+                                                = new ObservableCollection<EquipmentElement>();
 
         public ObservableCollection<LevelDto> DuctLevels { get;  set; }
         public ObservableCollection<DuctTypeDto> DuctTypes { get;  set; }
         public ObservableCollection<SystemTypeDto> DuctSystemTypes { get; set; }
+
+        //Equipment dto for the selected equipment
+        private EquipmentDto _selectedStartEquipment;
+        public EquipmentDto SelectedStartEquipment
+        {
+            get => _selectedStartEquipment;
+            set
+            {
+                _selectedStartEquipment = value;
+                OnPropertyChanged(nameof(SelectedStartEquipment));
+            }
+        }
 
         //Properties for the selected values
         private DuctTypeDto _selectedDuctType;
@@ -130,6 +145,24 @@ namespace Multiversions.Revit.Sample.ViewModels
             _convertPlaceholderToDuctEventraiser = ExternalEvent.Create(_convertPlaceholderToDuctHandler);
             ConvertToDuctCommand = new RelayCommand(RaiseConvertPlaceholderToDuctEvent);
 
+            //Called back from BusDuctCreation
+            //PreviewCommand = new RelayCommand(Preview);
+
+        }        
+
+        private void Preview()
+        {
+            // Trigger Revit ExternalEvent
+            _externalEvent.Raise();
+        }
+
+        public void UpdatePreview(List<EquipmentElement> elements)
+        {
+            EquipmentPreview.Clear();
+            foreach (var e in elements)
+            {
+                EquipmentPreview.Add(e);
+            }               
         }
 
         private void RaiseConvertPlaceholderToDuctEvent()
