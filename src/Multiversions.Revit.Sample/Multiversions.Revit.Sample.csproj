@@ -178,6 +178,7 @@
     <Compile Include="AddInApplication.cs" />
     <Compile Include="AddInCommand.cs" />
     <Compile Include="Models\BusDuctCreation.cs" />
+    <Compile Include="Models\CollectAndRenameElements.cs" />
     <Compile Include="Models\ConvertPlaceholderToDuct.cs" />
     <Compile Include="Models\RelayCommand.cs" />
     <Compile Include="Models\TheThemeChanger.cs" />
