@@ -62,6 +62,24 @@ namespace Multiversions.Revit.Sample.Ribbon
 
                         SmallImage = "ToolIcon.png"
                     }));
+            panel.AddItem(
+                RibbonButtonFactory.Create(
+                    new RibbonButtonInfo
+                    {
+                        Name = "CableTray",
+
+                        Text = "Cable Tray",
+
+                        CommandClass =
+                            "Multiversions.Revit.Sample.AddInCommand",
+
+                        Tooltip =
+                            "Creates Cable Tray ",
+
+                        LargeImage = "ToolIcon.png",
+
+                        SmallImage = "ToolIcon.png"
+                    }));
         }
     }
 }
